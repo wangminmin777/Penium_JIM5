@@ -1,0 +1,46 @@
+% calculate width of the region with no JIM5 signal
+% input: excel file containing signal strengths of each sample
+% output: width of the region with no JIM5 signal
+
+clc
+clear all
+close all
+
+
+threshold=10; % threshold for signal intensity
+windowwidth=5; % moving average interval
+
+
+rec_d=[];
+
+for n=1:64    % total 64 samples
+    
+    rawdata=xlsread('JIM5R.xlsx',n); 
+    
+    temp=[];
+    
+    temp1=rawdata(:,1);
+    temp2=rawdata(:,2);
+    
+    temp1=temp1(~isnan(temp1));
+    temp2=temp2(~isnan(temp2));
+    
+    temp2=movmean(temp2,windowwidth); % moving average
+    
+     
+    if isempty(find(temp2<threshold))
+        d=0;
+    else
+        temp1_sub=temp1(find(temp2<threshold));
+        d=temp1_sub(end)-temp1_sub(1);
+    end
+    
+    rec_d=[rec_d d];
+    
+    
+    
+end
+
+rec_d
+
+
